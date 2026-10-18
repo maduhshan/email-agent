@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail AI Agent</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>📧 Gmail AI Agent</h1>
+        <p>Smart Email Analysis powered by PydanticAI</p>
+    </header>
+
+    <div class="action-card">
+
+        <h2>Email Assistant</h2>
+
+        <p>
+            Analyze your latest Gmail messages and
+            generate intelligent reply suggestions.
+        </p>
+
+        <form action="/analyze" method="post">
+
+            <button type="submit" id="analyze-btn">
+                ✨ Analyze Emails
+            </button>
+
+        </form>
+
+    </div>
+
+    {% if error %}
+    <div class="error">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    {% if emails is not none %}
+
+    <h2 class="section-title">
+        Email Analysis Results
+    </h2>
+
+    {% if emails %}
+
+    {% for email in emails %}
+
+    <div class="email-card">
+
+        <div class="email-header">
+
+            <h3>{{ email.subject }}</h3>
+
+            <span class="priority {{ email.priority }}">
+                            {{ email.priority | upper }}
+                        </span>
+
+        </div>
+
+        <p>
+            <strong>From:</strong>
+            {{ email.sender }}
+        </p>
+
+        <p>
+            <strong>Requires Reply:</strong>
+
+            {% if email.requires_reply %}
+            <span class="yes">Yes</span>
+            {% else %}
+            <span class="no">No</span>
+            {% endif %}
+        </p>
+
+        {% if email.requires_reply %}
+
+        <div class="reply-box">
+
+            <h4>AI Suggested Reply</h4>
+
+            <p>{{ email.suggested_reply }}</p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    {% endfor %}
+
+    {% else %}
+
+    <p>No emails found.</p>
+
+    {% endif %}
+
+    {% endif %}
+
+</div>
+
+<script>
+    const form = document.querySelector("form");
+    const button = document.getElementById("analyze-btn");
+
+    form.addEventListener("submit", () => {
+        button.disabled = true;
+        button.textContent = "Analyzing emails...";
+    });
+</script>
+
+</body>
+</html>
